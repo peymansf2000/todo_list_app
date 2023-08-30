@@ -1,8 +1,13 @@
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 import 'package:todo_list_app/main.dart';
 // import 'package:todo_list_app/models.dart';
 // import 'package:todo_list_app/objectbox.dart';
+
+Color lowPriorityColor = const Color(0xff3BE1F1);
+Color normalPriorityColor = const Color(0xffF09819);
+Color highPriorityColor = primaryColor;
 
 class EditTaskScreen extends StatefulWidget {
   const EditTaskScreen({super.key});
@@ -36,7 +41,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                   flex: 1,
                   child: PriorityCard(
                     label: 'Low',
-                    color: const Color(0xff3BE1F1),
+                    color: lowPriorityColor,
                     priority: 0,
                     onTap: () {
                       setState(() {
@@ -53,7 +58,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                   flex: 1,
                   child: PriorityCard(
                     label: 'Normal',
-                    color: const Color(0xffF09819),
+                    color: normalPriorityColor,
                     priority: 1,
                     onTap: () {
                       setState(() {
@@ -70,7 +75,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                   flex: 1,
                   child: PriorityCard(
                     label: 'High',
-                    color: primaryColor,
+                    color: highPriorityColor,
                     priority: 2,
                     onTap: () {
                       setState(() {
@@ -83,11 +88,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               ],
             ),
             Expanded(
-              child: TextField(
-                decoration: const InputDecoration(
+              child: TextField(keyboardType: TextInputType.multiline, maxLines: null,scrollPhysics: const ClampingScrollPhysics(),maxLength: 300,
+                decoration: const InputDecoration(counterText: '',labelText:'Add a Task for Today...' ,
                     disabledBorder: InputBorder.none,
                     border: InputBorder.none,
-                    hintText: 'Add a Task for Today...'),
+                    // hintText: 'Add a Task for Today...'
+                    ),
                 controller: _controller,
               ),
             ),
@@ -97,7 +103,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            objectbox.addTask(name: _controller.text, priority: 0);
+            objectbox.addTask(
+                name: _controller.text, priority: selectedPriority);
             Navigator.pop(context);
           },
           label: const Row(
@@ -138,7 +145,7 @@ class PriorityCard extends StatelessWidget {
             border: Border.all(
                 width: 2, color: secondaryTextColor.withOpacity(0.3)),
             borderRadius: BorderRadius.circular(4)),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children: [
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           Text(label),
           //  _CheckBoxShape(
           //         value: isSelected,
@@ -151,7 +158,7 @@ class PriorityCard extends StatelessWidget {
               onTap();
             },
             fillColor: MaterialStateProperty.all(color),
-            shape: CircleBorder(),
+            shape: const CircleBorder(),
             side: BorderSide(color: color, width: 10),
             activeColor: color,
             focusColor: color,
@@ -164,27 +171,27 @@ class PriorityCard extends StatelessWidget {
   }
 }
 
-class _CheckBoxShape extends StatelessWidget {
-  final bool value;
-  final Color color;
+// class _CheckBoxShape extends StatelessWidget {
+//   final bool value;
+//   final Color color;
 
-  const _CheckBoxShape({required this.value, required this.color});
+//   const _CheckBoxShape({required this.value, required this.color});
 
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-    return Container(
-      width: 16,
-      height: 16,
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(12), color: color),
-      child: value
-          ? Icon(
-              CupertinoIcons.check_mark,
-              size: 12,
-              color: themeData.colorScheme.onPrimary,
-            )
-          : null,
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     final ThemeData themeData = Theme.of(context);
+//     return Container(
+//       width: 16,
+//       height: 16,
+//       decoration:
+//           BoxDecoration(borderRadius: BorderRadius.circular(12), color: color),
+//       child: value
+//           ? Icon(
+//               CupertinoIcons.check_mark,
+//               size: 12,
+//               color: themeData.colorScheme.onPrimary,
+//             )
+//           : null,
+//     );
+//   }
+// }
