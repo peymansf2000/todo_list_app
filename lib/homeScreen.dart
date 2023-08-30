@@ -36,20 +36,20 @@ class HomeScreen extends StatelessWidget {
                             'To Do List',
                             style: themeData.textTheme.titleLarge,
                           ),
-                          Icon(
+                          const Icon(
                             CupertinoIcons.share,
                             color: Colors.white,
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 12,
                       ),
                       ClipRRect(
                           borderRadius: BorderRadius.circular(28),
                           child: TextField(
                             decoration: InputDecoration(
-                                prefixIcon: Icon(CupertinoIcons.search,color: secondaryTextColor,),
+                                prefixIcon: const Icon(CupertinoIcons.search,color: secondaryTextColor,),
                                 hintText: 'Search Tasks',
                                 filled: true,
                                 fillColor: themeData.colorScheme.onPrimary,
@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [Column(crossAxisAlignment: CrossAxisAlignment.start,children: [Text('Today',style: themeData.textTheme.titleSmall?.copyWith(fontSize: 17),),Container(margin: EdgeInsets.only(top: 4),width: 70,height: 3,decoration: BoxDecoration(borderRadius: BorderRadius.circular(28),color: themeData.colorScheme.primary),)],),MaterialButton(onPressed: (){},color: Color(0xFFEAEFF5),textColor: secondaryTextColor,elevation: 0,child: Row(
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [Column(crossAxisAlignment: CrossAxisAlignment.start,children: [Text('Today',style: themeData.textTheme.titleSmall?.copyWith(fontSize: 17),),Container(margin: const EdgeInsets.only(top: 4),width: 70,height: 3,decoration: BoxDecoration(borderRadius: BorderRadius.circular(28),color: themeData.colorScheme.primary),)],),MaterialButton(onPressed: (){},color: const Color(0xFFEAEFF5),textColor: secondaryTextColor,elevation: 0,child: const Row(
                   children: [
                     Text('Delete All'),Icon(CupertinoIcons.delete_solid)
                   ],
@@ -71,7 +71,7 @@ class HomeScreen extends StatelessWidget {
               Flexible(
                 child: StreamBuilder<List<Task>>(
                   stream: objectbox.getTasks(),
-                  builder: (context, snapshot) => ListView.builder(
+                  builder: (context, snapshot) => ListView.builder(padding: const EdgeInsets.only(bottom: 80),
                     itemBuilder: (context, index) => TaskCard(
                       index: index,
                     ),
@@ -85,13 +85,13 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => EditTaskScreen()),
+                MaterialPageRoute(builder: (context) => const EditTaskScreen()),
               );
             },
-            label: Row(
+            label: const Row(
               children: [
-                const Text('Add New Task'),SizedBox(width: 4,),
-              Icon(Icons.add_circle)],
+                Text('Add New Task'),SizedBox(width: 4,),
+              Icon(Icons.add_circle_outline)],
             ),
           )),
     );
@@ -100,7 +100,7 @@ class HomeScreen extends StatelessWidget {
 
 class TaskCard extends StatefulWidget {
   const TaskCard({super.key, required this.index});
-  final index;
+  final int index;
 
   @override
   State<TaskCard> createState() => _TaskCardState();
