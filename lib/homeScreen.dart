@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
                   themeData.colorScheme.primaryContainer
                 ])),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                   child: Column(
                     children: [
                       Row(
@@ -49,7 +49,10 @@ class HomeScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(28),
                           child: TextField(
                             decoration: InputDecoration(
-                                prefixIcon: const Icon(CupertinoIcons.search,color: secondaryTextColor,),
+                                prefixIcon: const Icon(
+                                  CupertinoIcons.search,
+                                  color: secondaryTextColor,
+                                ),
                                 hintText: 'Search Tasks',
                                 filled: true,
                                 fillColor: themeData.colorScheme.onPrimary,
@@ -60,18 +63,56 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [Column(crossAxisAlignment: CrossAxisAlignment.start,children: [Text('Today',style: themeData.textTheme.titleSmall?.copyWith(fontSize: 17),),Container(margin: const EdgeInsets.only(top: 4),width: 70,height: 3,decoration: BoxDecoration(borderRadius: BorderRadius.circular(28),color: themeData.colorScheme.primary),)],),MaterialButton(onPressed: (){},color: const Color(0xFFEAEFF5),textColor: secondaryTextColor,elevation: 0,child: const Row(
-                  children: [
-                    Text('Delete All'),Icon(CupertinoIcons.delete_solid)
-                  ],
-                ),)],),
-              )
-              ,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                child: Container(
+                  decoration:
+                      BoxDecoration(color: themeData.colorScheme.background),
+                  child: Column(
+                    children: [const SizedBox(height: 10,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Today',
+                                style: themeData.textTheme.titleSmall
+                                    ?.copyWith(fontSize: 17),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 4),
+                                width: 70,
+                                height: 3,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(28),
+                                    color: themeData.colorScheme.primary),
+                              )
+                            ],
+                          ),
+                          MaterialButton(
+                            onPressed: () {},
+                            color: const Color(0xFFEAEFF5),
+                            textColor: secondaryTextColor,
+                            elevation: 0,
+                            child: const Row(
+                              children: [
+                                Text('Delete All'),
+                                Icon(CupertinoIcons.delete_solid)
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Flexible(
                 child: StreamBuilder<List<Task>>(
                   stream: objectbox.getTasks(),
-                  builder: (context, snapshot) => ListView.builder(padding: const EdgeInsets.only(bottom: 80),
+                  builder: (context, snapshot) => ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 80),
                     itemBuilder: (context, index) => TaskCard(
                       index: index,
                     ),
@@ -90,8 +131,12 @@ class HomeScreen extends StatelessWidget {
             },
             label: const Row(
               children: [
-                Text('Add New Task'),SizedBox(width: 4,),
-              Icon(Icons.add_circle_outline)],
+                Text('Add New Task'),
+                SizedBox(
+                  width: 4,
+                ),
+                Icon(Icons.add_circle_outline)
+              ],
             ),
           )),
     );
@@ -108,24 +153,44 @@ class TaskCard extends StatefulWidget {
 
 class _TaskCardState extends State<TaskCard> {
   bool isChecked = true;
-
   @override
   Widget build(BuildContext context) {
-  final themeData = Theme.of(context);
-
+    final themeData = Theme.of(context);
+    late Color selectedPriorityColor;
+final entity =  objectbox.taskBox.getAll()[widget.index];
+switch (entity.priority){
+  case(0):
+    selectedPriorityColor = lowPriorityColor;
+  break;
+  case(1):
+    selectedPriorityColor = normalPriorityColor;
+  break;
+    case(2):
+    selectedPriorityColor = highPriorityColor;
+  break;
+}
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 3, 16, 0),
-      child: ListTile(
-        tileColor: themeData.colorScheme.onPrimary,
-        leading: Checkbox(
-            shape: const CircleBorder(),
-            value: isChecked,
-            onChanged: (bool? value) {
-              setState(() {
-                isChecked = value!;
-              });
-            }),
-        title: Expanded(child: Text(objectbox.taskBox.getAll()[widget.index].name,maxLines: 1,overflow: TextOverflow.ellipsis,)),
+      child: Stack(
+        children: [
+          ListTile(
+            tileColor: themeData.colorScheme.onPrimary,
+            leading: Checkbox(
+                shape: const CircleBorder(),
+                value: isChecked,
+                onChanged: (bool? value) {
+                  setState(() {
+                    isChecked = value!;
+                  });
+                }),
+            title: Expanded(
+                child: Text(
+              entity.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            )),
+          ),
+        Positioned(right: 0,bottom: 0,top: 0,child: Container(width: 6,decoration: BoxDecoration(color:selectedPriorityColor ),))],
       ),
     );
   }
