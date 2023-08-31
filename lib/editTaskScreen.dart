@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'package:todo_list_app/main.dart';
-// import 'package:todo_list_app/models.dart';
+import 'package:todo_list_app/models.dart';
 // import 'package:todo_list_app/objectbox.dart';
 
 Color lowPriorityColor = const Color(0xff3BE1F1);
@@ -10,19 +10,20 @@ Color normalPriorityColor = const Color(0xffF09819);
 Color highPriorityColor = primaryColor;
 
 class EditTaskScreen extends StatefulWidget {
-  const EditTaskScreen({super.key});
-
+  const EditTaskScreen({super.key, required this.task});
+  final Task task;
   @override
   State<EditTaskScreen> createState() => _EditTaskScreenState();
 }
 
 class _EditTaskScreenState extends State<EditTaskScreen> {
-  final TextEditingController _controller = TextEditingController();
-  int selectedPriority = 0;
+  late final TextEditingController _controller =
+      TextEditingController(text: widget.task.name);
 
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
+
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -45,10 +46,10 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                     priority: 0,
                     onTap: () {
                       setState(() {
-                        selectedPriority = 0;
+                        widget.task.priority = 0;
                       });
                     },
-                    isSelected: selectedPriority == 0,
+                    isSelected: widget.task.priority == 0,
                   ),
                 ),
                 const SizedBox(
@@ -62,10 +63,10 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                     priority: 1,
                     onTap: () {
                       setState(() {
-                        selectedPriority = 1;
+                        widget.task.priority = 1;
                       });
                     },
-                    isSelected: selectedPriority == 1,
+                    isSelected: widget.task.priority == 1,
                   ),
                 ),
                 const SizedBox(
@@ -79,20 +80,27 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                     priority: 2,
                     onTap: () {
                       setState(() {
-                        selectedPriority = 2;
+                        widget.task.priority = 2;
                       });
                     },
-                    isSelected: selectedPriority == 2,
+                    isSelected: widget.task.priority == 2,
                   ),
                 )
               ],
             ),
             Expanded(
-              child: TextField(keyboardType: TextInputType.multiline, maxLines: null,scrollPhysics: const ClampingScrollPhysics(),maxLength: 300,
-                decoration: const InputDecoration(counterText: '',labelText:'Add a Task for Today...' ,
+              child: TextField(
+                expands: true,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                scrollPhysics: const ClampingScrollPhysics(),
+                maxLength: 300,
+                decoration: const InputDecoration(alignLabelWithHint: true,
+                    counterText: '',
+                    labelText: 'Add a Task for Today...',
                     disabledBorder: InputBorder.none,
-                    border: InputBorder.none,
-                    // hintText: 'Add a Task for Today...'
+                    border:
+                        InputBorder.none // hintText: 'Add a Task for Today...'
                     ),
                 controller: _controller,
               ),
@@ -103,9 +111,20 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            objectbox.addTask(
-                name: _controller.text, priority: selectedPriority);
-            Navigator.pop(context);
+            final name = _controller.text;
+            if (name.isNotEmpty) {
+              if (objectbox.isTaskInBox(widget.task.id)) {
+                widget.task.name = name;
+                objectbox.updateTask(task: widget.task);
+                Navigator.pop(context);
+              } else {
+                objectbox.addTask(
+                    name: _controller.text, priority: widget.task.priority);
+                Navigator.pop(context);
+              }
+            } else {
+              _showSnackbar(context, 'Please add a Task...');
+            }
           },
           label: const Row(
             children: [
@@ -170,6 +189,14 @@ class PriorityCard extends StatelessWidget {
     );
   }
 }
+
+void _showSnackbar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Text(message),
+    duration: const Duration(seconds: 1),
+  ));
+}
+
 
 // class _CheckBoxShape extends StatelessWidget {
 //   final bool value;

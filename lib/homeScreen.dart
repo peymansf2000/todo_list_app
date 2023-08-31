@@ -68,7 +68,10 @@ class HomeScreen extends StatelessWidget {
                   decoration:
                       BoxDecoration(color: themeData.colorScheme.background),
                   child: Column(
-                    children: [const SizedBox(height: 10,),
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -114,7 +117,7 @@ class HomeScreen extends StatelessWidget {
                   builder: (context, snapshot) => ListView.builder(
                     padding: const EdgeInsets.only(bottom: 80),
                     itemBuilder: (context, index) => TaskCard(
-                      index: index,
+                      task: objectbox.taskBox.getAll()[index],
                     ),
                     itemCount: objectbox.taskBox.count(),
                   ),
@@ -126,7 +129,10 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const EditTaskScreen()),
+                MaterialPageRoute(
+                    builder: (context) => EditTaskScreen(
+                          task: Task(),
+                        )),
               );
             },
             label: const Row(
@@ -144,53 +150,75 @@ class HomeScreen extends StatelessWidget {
 }
 
 class TaskCard extends StatefulWidget {
-  const TaskCard({super.key, required this.index});
-  final int index;
+  const TaskCard({super.key, required this.task});
+  final Task task;
 
   @override
   State<TaskCard> createState() => _TaskCardState();
 }
 
 class _TaskCardState extends State<TaskCard> {
-  bool isChecked = true;
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     late Color selectedPriorityColor;
-final entity =  objectbox.taskBox.getAll()[widget.index];
-switch (entity.priority){
-  case(0):
-    selectedPriorityColor = lowPriorityColor;
-  break;
-  case(1):
-    selectedPriorityColor = normalPriorityColor;
-  break;
-    case(2):
-    selectedPriorityColor = highPriorityColor;
-  break;
-}
+    
+    switch (widget.task.priority) {
+      case (0):
+        selectedPriorityColor = lowPriorityColor;
+        break;
+      case (1):
+        selectedPriorityColor = normalPriorityColor;
+        break;
+      case (2):
+        selectedPriorityColor = highPriorityColor;
+        break;
+    }
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 3, 16, 0),
       child: Stack(
         children: [
           ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditTaskScreen(
+                          task: widget.task,
+                        )),
+              );
+            },
             tileColor: themeData.colorScheme.onPrimary,
             leading: Checkbox(
                 shape: const CircleBorder(),
-                value: isChecked,
+                value: widget.task.isCompleted,
                 onChanged: (bool? value) {
                   setState(() {
-                    isChecked = value!;
+                    widget.task.isCompleted = value!;
+                    objectbox.updateTask(task: widget.task);
+                    
+
                   });
                 }),
             title: Expanded(
                 child: Text(
-              entity.name,
+              style: widget.task.isCompleted
+                  ? const TextStyle(decoration: TextDecoration.lineThrough)
+                  : null,
+              widget.task.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             )),
           ),
-        Positioned(right: 0,bottom: 0,top: 0,child: Container(width: 6,decoration: BoxDecoration(color:selectedPriorityColor ),))],
+          Positioned(
+              right: 0,
+              bottom: 0,
+              top: 0,
+              child: Container(
+                width: 6,
+                decoration: BoxDecoration(color: selectedPriorityColor),
+              ))
+        ],
       ),
     );
   }

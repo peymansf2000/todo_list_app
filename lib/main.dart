@@ -34,10 +34,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'ToDO',
       theme: ThemeData(
-          textTheme: GoogleFonts.poppinsTextTheme(const TextTheme(titleSmall: TextStyle(fontWeight: FontWeight.bold),
+          textTheme: GoogleFonts.poppinsTextTheme(const TextTheme(
+              titleSmall: TextStyle(fontWeight: FontWeight.bold),
               titleLarge:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
-                  
           useMaterial3: true,
           colorScheme: const ColorScheme.light(
               primary: primaryColor,

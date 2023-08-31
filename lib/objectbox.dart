@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-
 import 'models.dart';
 import 'objectbox.g.dart';
 
@@ -17,15 +15,32 @@ class ObjectBox {
     final store = await openStore();
     return ObjectBox._create(store);
   }
-  void addTask({required String name, required int priority}){
-    Task newTask = Task(name: name, priority: priority);
+
+  void addTask({required String name, required int priority}) {
+    Task newTask = Task();
+    newTask.name = name;
+    newTask.priority = priority;
     taskBox.put(newTask);
 
     debugPrint('Added Task: $newTask');
   }
 
-  Stream <List<Task>> getTasks(){
+  void updateTask({required Task task}) {
+    taskBox.put(task);
+
+    debugPrint('updated Task: $updateTask');
+  }
+
+  bool isTaskInBox(int taskId) {
+    if (taskId == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Stream<List<Task>> getTasks() {
     final builder = taskBox.query();
-    return builder.watch(triggerImmediately: true).map((query) => query.find() );
+    return builder.watch(triggerImmediately: true).map((query) => query.find());
   }
 }
