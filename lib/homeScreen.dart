@@ -1,13 +1,20 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:todo_list_app/main.dart';
 import 'package:todo_list_app/models.dart';
 
 import 'editTaskScreen.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -48,6 +55,10 @@ class HomeScreen extends StatelessWidget {
                       ClipRRect(
                           borderRadius: BorderRadius.circular(28),
                           child: TextField(
+                            controller: _controller,
+                            onChanged: (value) {
+                              setState(() {});
+                            },
                             decoration: InputDecoration(
                                 prefixIcon: const Icon(
                                   CupertinoIcons.search,
@@ -62,88 +73,99 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                child: Container(
-                  decoration:
-                      BoxDecoration(color: themeData.colorScheme.background),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+              StreamBuilder(
+                stream: objectbox.getTasksCount(),
+                builder: (context, snapshot) => objectbox.isTaskBoxEmpty()
+                    ? const emptyTaskState()
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: themeData.colorScheme.background),
+                          child: Column(
                             children: [
-                              Text(
-                                'Today',
-                                style: themeData.textTheme.titleSmall
-                                    ?.copyWith(fontSize: 17),
+                              const SizedBox(
+                                height: 10,
                               ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 4),
-                                width: 70,
-                                height: 3,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(28),
-                                    color: themeData.colorScheme.primary),
-                              )
-                            ],
-                          ),
-                          MaterialButton(
-                            onPressed: () => showDialog<String>(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                title: const Text('Delete all Tasks'),
-                                content: const Text(
-                                    'Do you want to delete all the tasks?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context, 'No');
-                                    },
-                                    child: const Text('No'),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Today',
+                                        style: themeData.textTheme.titleSmall
+                                            ?.copyWith(fontSize: 17),
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 4),
+                                        width: 70,
+                                        height: 3,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(28),
+                                            color:
+                                                themeData.colorScheme.primary),
+                                      )
+                                    ],
                                   ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context, 'Yes');
-                                      objectbox.removeAllTasks();
-                                    },
-                                    child: const Text('Yes'),
-                                  ),
+                                  MaterialButton(
+                                    onPressed: () => showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        title: const Text('Delete all Tasks'),
+                                        content: const Text(
+                                            'Do you want to delete all the tasks?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context, 'No');
+                                            },
+                                            child: const Text('No'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context, 'Yes');
+                                              objectbox.removeAllTasks();
+                                            },
+                                            child: const Text('Yes'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    color: const Color(0xFFEAEFF5),
+                                    textColor: secondaryTextColor,
+                                    elevation: 0,
+                                    child: const Row(
+                                      children: [
+                                        Text('Delete All'),
+                                        Icon(CupertinoIcons.delete_solid)
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
-                            ),
-                            color: const Color(0xFFEAEFF5),
-                            textColor: secondaryTextColor,
-                            elevation: 0,
-                            child: const Row(
-                              children: [
-                                Text('Delete All'),
-                                Icon(CupertinoIcons.delete_solid)
-                              ],
-                            ),
-                          )
-                        ],
+                            ],
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                ),
               ),
               Flexible(
                 child: StreamBuilder<List<Task>>(
-                  stream: objectbox.getTasks(),
-                  builder: (context, snapshot) => ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 80),
-                    itemBuilder: (context, index) => TaskCard(
-                      task: objectbox.taskBox.getAll()[index],
-                    ),
-                    itemCount: objectbox.taskBox.count(),
-                  ),
-                ),
+                    stream: objectbox.getTasks(),
+                    builder: (context, snapshot) => objectbox.isTaskBoxEmpty()
+                        ? const SizedBox.shrink()
+                        : ListView.builder(
+                            padding: const EdgeInsets.only(bottom: 80),
+                            itemBuilder: (context, index) => TaskCard(
+                              task: objectbox.searchTasks(_controller.text)[index],
+                            ),
+                            itemCount: objectbox.searchTasks(_controller.text).length,
+                          )),
               ),
             ],
           ),
@@ -260,6 +282,30 @@ class _TaskCardState extends State<TaskCard> {
                 width: 6,
                 decoration: BoxDecoration(color: selectedPriorityColor),
               ))
+        ],
+      ),
+    );
+  }
+}
+
+class emptyTaskState extends StatelessWidget {
+  const emptyTaskState({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/img/empty_state.svg',
+            width: 150,
+          ),
+          const SizedBox(
+            height: 25,
+          ),
+          const Text('Your Task list is Empty')
         ],
       ),
     );

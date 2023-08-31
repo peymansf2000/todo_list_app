@@ -43,6 +43,14 @@ class ObjectBox {
     debugPrint('Tasks were removed');
   }
 
+  bool isTaskBoxEmpty() {
+    if (taskBox.count() == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   bool isTaskInBox(int taskId) {
     if (taskId == 0) {
       return false;
@@ -52,7 +60,24 @@ class ObjectBox {
   }
 
   Stream<List<Task>> getTasks() {
-    final builder = taskBox.query();
+    QueryBuilder<Task> builder = taskBox.query();
+
     return builder.watch(triggerImmediately: true).map((query) => query.find());
+  }
+
+  Stream<int> getTasksCount() {
+    final query = taskBox.query();
+    return query.watch().map((query) => query.count());
+  }
+
+
+  List searchTasks(String value){
+    late final QueryBuilder<Task> builder;
+        if (value != '') {
+       builder = taskBox.query(Task_.name.contains(value));
+    } else {
+       builder = taskBox.query();
+    }
+    return builder.build().find();
   }
 }
