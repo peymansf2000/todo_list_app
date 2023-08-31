@@ -28,7 +28,13 @@ class ObjectBox {
   void updateTask({required Task task}) {
     taskBox.put(task);
 
-    debugPrint('updated Task: $updateTask');
+    debugPrint('Updated Task: $task');
+  }
+
+  void removeAllTasks(){
+    taskBox.removeAll();
+
+    debugPrint('Tasks were removed' );
   }
 
   bool isTaskInBox(int taskId) {

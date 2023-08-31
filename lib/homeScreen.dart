@@ -94,7 +94,29 @@ class HomeScreen extends StatelessWidget {
                             ],
                           ),
                           MaterialButton(
-                            onPressed: () {},
+                            onPressed: () => showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text('Delete all Tasks'),
+                                content: const Text(
+                                    'Do you want to delete all the tasks?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, 'No');
+                                    },
+                                    child: const Text('No'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, 'No');
+                                      objectbox.removeAllTasks();
+                                    },
+                                    child: const Text('Yes'),
+                                  ),
+                                ],
+                              ),
+                            ),
                             color: const Color(0xFFEAEFF5),
                             textColor: secondaryTextColor,
                             elevation: 0,
@@ -162,7 +184,7 @@ class _TaskCardState extends State<TaskCard> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     late Color selectedPriorityColor;
-    
+
     switch (widget.task.priority) {
       case (0):
         selectedPriorityColor = lowPriorityColor;
@@ -196,8 +218,6 @@ class _TaskCardState extends State<TaskCard> {
                   setState(() {
                     widget.task.isCompleted = value!;
                     objectbox.updateTask(task: widget.task);
-                    
-
                   });
                 }),
             title: Expanded(
