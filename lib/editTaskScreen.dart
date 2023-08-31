@@ -89,20 +89,25 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               ],
             ),
             Expanded(
-              child: TextField(
-                expands: true,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                scrollPhysics: const ClampingScrollPhysics(),
-                maxLength: 300,
-                decoration: const InputDecoration(alignLabelWithHint: true,
-                    counterText: '',
-                    labelText: 'Add a Task for Today...',
-                    disabledBorder: InputBorder.none,
-                    border:
-                        InputBorder.none // hintText: 'Add a Task for Today...'
-                    ),
-                controller: _controller,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 24, 0, 75),
+                child: ClipRRect(borderRadius: BorderRadius.circular(28),
+                  child: TextField(
+                    expands: true,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    scrollPhysics: const ClampingScrollPhysics(),
+                    maxLength: 300,
+                    decoration: const InputDecoration(alignLabelWithHint: true,filled: true,
+                        counterText: '',
+                        labelText: 'Add a Task for Today...',
+                        disabledBorder: InputBorder.none,
+                        border:
+                            InputBorder.none // hintText: 'Add a Task for Today...'
+                        ),
+                    controller: _controller,
+                  ),
+                ),
               ),
             ),
           ],

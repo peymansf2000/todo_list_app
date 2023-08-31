@@ -109,7 +109,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.pop(context, 'No');
+                                      Navigator.pop(context, 'Yes');
                                       objectbox.removeAllTasks();
                                     },
                                     child: const Text('Yes'),
@@ -201,6 +201,28 @@ class _TaskCardState extends State<TaskCard> {
       child: Stack(
         children: [
           ListTile(
+            onLongPress: () => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text('Delete the Task'),
+                content: const Text('Do you want to delete this task?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, 'No');
+                    },
+                    child: const Text('No'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, 'Yes');
+                      objectbox.removeTask(task: widget.task);
+                    },
+                    child: const Text('Yes'),
+                  ),
+                ],
+              ),
+            ),
             onTap: () {
               Navigator.push(
                 context,
