@@ -1,16 +1,14 @@
-# todo_list_app
 
-A new Flutter project.
+## Todo List App
+This is a simple Todo List app built using Flutter, designed for learning purposes. The app utilizes ObjectBox as the database for storing tasks.
 
-## Getting Started
+## Features
+Add new tasks to the todo list.
+Mark tasks as completed.
+Delete tasks from the list.
+Persist tasks using ObjectBox as the database.
 
-This project is a starting point for a Flutter application.
+## Screenshots
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Screenshot 2](https://github.com/peymansf2000/todo_list_app/blob/main/screenshots/Screenshot_2.png)
+![Screenshot 1](https://github.com/peymansf2000/todo_list_app/blob/main/screenshots/Screenshot_1.png)
