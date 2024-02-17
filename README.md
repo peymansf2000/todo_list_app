@@ -10,5 +10,6 @@ Persist tasks using ObjectBox as the database.
 
 ## Screenshots
 
-![Screenshot 2](https://github.com/peymansf2000/todo_list_app/blob/main/screenshots/Screenshot_2.png)
-![Screenshot 1](https://github.com/peymansf2000/todo_list_app/blob/main/screenshots/Screenshot_1.png)
+| EditTask Screen | Home Screen |
+|-----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| <img src="https://github.com/peymansf2000/todo_list_app/blob/main/screenshots/Screenshot_1.png" width="250"> )  | <img src="https://github.com/peymansf2000/todo_list_app/blob/main/screenshots/Screenshot_2.png" width="250">   |
